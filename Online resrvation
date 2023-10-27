@@ -1,0 +1,101 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+class Reservation {
+    String userName;
+    String reservationDetails;
+
+    public Reservation(String userName, String reservationDetails) {
+        this.userName = userName;
+        this.reservationDetails = reservationDetails;
+    }
+}
+
+public class ReservationSystem {
+    private static Map<String, String> users = new HashMap<>(); // Store username and password
+    private static Map<String, Reservation> reservations = new HashMap<>(); // Store reservations
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("1. Register");
+            System.out.println("2. Login");
+            System.out.println("3. Make a Reservation");
+            System.out.println("4. Cancel Reservation");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    registerUser(scanner);
+                    break;
+                case 2:
+                    loginUser(scanner);
+                    break;
+                case 3:
+                    makeReservation(scanner);
+                    break;
+                case 4:
+                    cancelReservation(scanner);
+                    break;
+                case 5:
+                    System.exit(0);
+            }
+        }
+    }
+
+    private static void registerUser(Scanner scanner) {
+        System.out.print("Enter a username: ");
+        String username = scanner.next();
+        System.out.print("Enter a password: ");
+        String password = scanner.next();
+        users.put(username, password);
+        System.out.println("User registered successfully!");
+    }
+
+    private static void loginUser(Scanner scanner) {
+        System.out.print("Enter your username: ");
+        String username = scanner.next();
+        System.out.print("Enter your password: ");
+        String password = scanner.next();
+        if (users.containsKey(username) && users.get(username).equals(password)) {
+            System.out.println("Login successful!");
+        } else {
+            System.out.println("Invalid username or password.");
+        }
+    }
+
+    private static void makeReservation(Scanner scanner) {
+        if (isLoggedIn()) {
+            System.out.print("Enter reservation details: ");
+            String details = scanner.next();
+            Reservation reservation = new Reservation(getLoggedInUser(), details);
+            reservations.put(getLoggedInUser(), reservation);
+            System.out.println("Reservation made successfully!");
+        } else {
+            System.out.println("Please log in first.");
+        }
+    }
+
+    private static void cancelReservation(Scanner scanner) {
+        if (isLoggedIn() && reservations.containsKey(getLoggedInUser())) {
+            reservations.remove(getLoggedInUser());
+            System.out.println("Reservation canceled successfully.");
+        } else {
+            System.out.println("No reservation found for the logged-in user.");
+        }
+    }
+
+    private static boolean isLoggedIn() {
+        return getLoggedInUser() != null;
+    }
+
+    private static String getLoggedInUser() {
+        // In a real application, you would use session management or tokens for authentication.
+        return "username"; // Replace with your authentication logic.
+    }
+}
